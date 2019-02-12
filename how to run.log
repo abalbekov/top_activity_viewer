@@ -1,0 +1,16 @@
+
+
+-- to run this project:
+cmd
+docker start ora122
+	-- if after windows reboot
+	docker: Error response from daemon: 
+			driver failed programming external connectivity on endpoint app (613d916011baa35b0f401de41450c46ba78fcbb9a8372ca30408fd2145718f5a): 
+			Error starting userland proxy: 
+			mkdir /port/tcp:0.0.0.0:5000:tcp:172.17.0.2:5000: 
+			input/output error.
+	-- then restart docker and repeat
+	
+cd C:\Users\admin\Documents\dated_logs\20190204 top_activity_viewer\project
+start_app.bat
+

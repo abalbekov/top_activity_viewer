@@ -1,0 +1,128 @@
+html, body {
+	font-family: sans-serif;
+	html, body { font-size: 90%; }   /* Desktop */ 
+}
+
+@media screen and (max-width: 400px) /* Mobile  */ {
+	html, body { font-size: 100%; }
+}
+
+/*-- other elements --*/
+#chart_source {
+	font-size: 1em;
+}
+
+#chart_stats, #conn_selector, #chart_source, #rac_instance1 {
+	width: 20em;
+}
+/*-- initially hide --*/
+#rac_instance1 {display: none;}
+
+/*-- Chart and Metric legend --*/
+.chart {
+	display: inline-block;
+	position: relative;
+	width: 60%;
+}
+#chart_dygraph {
+	width: 100% !important;
+}
+.chart h2 {
+	margin: 0px;
+	font-size: 1rem;
+	text-align: center;
+	background:hsl(170,70%, 80%);
+}
+
+
+/*-- Chart titles and labels --*/
+.dygraph-title { 
+	font-size: 1rem; 
+	#text-shadow: gray 1px 1px 1px;
+}
+.dygraph-label.dygraph-xlabel, 
+.dygraph-label.dygraph-ylabel,
+.dygraph-axis-label.dygraph-axis-label-x,
+.dygraph-axis-label.dygraph-axis-label-y,
+.dygraph-legend {
+	font-size: 1em;
+	font-weight: bold;
+}
+
+/*-- Spinner animation --*/
+/*-- https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_loader --*/
+.loader {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 1;
+  border: 6px solid #f3f3f3;
+  border-radius: 50%;
+  /*border-top: 6px solid #3498db;*/
+  border-top: 6px solid hsl(170,100%, 40%);
+  width: 36px;
+  height: 36px;
+  -webkit-animation: spin 2s linear infinite;
+  animation: spin 2s linear infinite;
+}
+
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+	0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.outer {
+	/*position:relative;*/
+	width=90%;
+	/*--- below is to prevent legend div falling to next line on window shrink ---*/
+	white-space:nowrap;
+    overflow:hidden;
+}
+
+/*----- Legend -----*/
+#legend {
+	display: inline-block;
+	vertical-align: top;
+	position:relative;
+	margin-left: 1em;
+	min-width: 200px;
+	width: 15%;
+	
+}
+#legend h2 {
+	margin: 0px;
+	font-size: 1rem; 
+	text-align: center;
+	background:hsl(170,70%, 80%);
+}
+
+#legend ul {
+	list-style-type: none;
+}
+
+#legend ul li:before {    
+    font-family: 'FontAwesome';
+    content: '\f0c8';
+    margin:0 5px 0 -15px;
+}
+
+li.legend_administrative:before {color: #6B7051;}
+li.legend_application:before 	{color: #C22600;}
+li.legend_clustr:before 		{color: #D2C2B3;}
+li.legend_commit:before 		{color: #E46800;}
+li.legend_concurrency:before 	{color: #8C1800;}
+li.legend_configuration:before 	{color: #604300;}
+li.legend_network:before 		{color: #9D9169;}
+li.legend_other:before 			{color: #F16DAE;}
+li.legend_queueing:before 		{color: #C5B6A0;}
+li.legend_scheduler:before 		{color: #84FA8E;}
+li.legend_system_io:before 		{color: #0094EC;}
+li.legend_user_io:before 		{color: #004CE6;}
+li.legend_cpu:before 			{color: #00AA00;}
+li.legend_highlighted:before 	{color: #FFFF00;}
+

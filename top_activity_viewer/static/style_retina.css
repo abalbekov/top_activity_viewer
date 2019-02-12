@@ -1,0 +1,7 @@
+
+.sqlmonitor {
+	display: none;
+}
+.chart, #chart_dygraph {
+	width:100% !important;
+}

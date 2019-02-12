@@ -1,0 +1,36 @@
+---------
+-- to do list:
+---------
+
+done: 1. when selecting new connection - recreate empty graph and clear metrics list (it already re-builds easyautocomplete)
+done: 2. when removing last selected metrics also empty the graph
+done: 3. color selected metrics in the chart colors
+done: 4. sql: modify to include derived items
+done: 4a sql: modify to replace null with something (check dygraph doc - NaN ??)
+done: 5. move out event logic into a function
+5. can i compare charts from diff databases ?
+    This would require combining datasets on client, i.e. in javascript; may be slow ??
+	alternatively can be combined in python after selecting from several databases; 
+	this may also be slow since there will be no data streaming
+6. add "to remove metrics from chart click on metric below" on the bottom
+done: 7. add units on the bottom 
+done: 8. prevent from selecting second time already selected metrics
+9. make static "Overview" tab with Logical Reads per Sec, Redo per Sec, Physical
+10. display error when python can not connect to oracle (like ewptsdb_prod with no tunnel)
+10a. why datapoint hover overlay is outside of the chart ?
+done: 11. Title and Units labels are misleading on multi-series chart
+done: 12. multi-instance (RAC): add inst_id checkbox on bottom; 
+done: 13: add "ALL" instances in sql; for derived it is tricky
+done: 14: add SQL_MONITOR datatable
+15: repaint SQL_MONITOR on zoomEnd and panEnd events
+	There are no such events; 
+	check https://groups.google.com/forum/#!topic/dygraphs-users/I-wNDXZjCls
+	check http://kaliatech.github.io/dygraphs-dynamiczooming-example/
+done: 16: shade area on chart while hovering over sql in SQL_MONITOR datatable
+17: to speed up chart loading time:
+	separate data for full range from data for visible dateWindow
+		for full range - take from DBA_HIST_SYSMETRIC_SUMMARY where its aggregated by AWR snap
+		for visible viewport - take from DBA_HIST_SYSMETRIC_HISTORY
+		splice the two data sources before feeding to dyGraph
+	follow http://kaliatech.github.io/dygraphs-dynamiczooming-example/
+
