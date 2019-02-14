@@ -94,9 +94,33 @@ def rac_instances():
     inst_cnt = cursor.fetchone()
     print ('inst_cnt:', inst_cnt)
     cursor.close()
-#    con.close()
     return str(inst_cnt[0])
-        
+
+#--
+# provide number of CPU cores
+#--
+@app.route('/cpu_cores', methods = ['POST'])
+def cpu_cores():
+
+    print('cpu_cores(): request.form : ', request.form)
+    print('cpu_cores(): request : ', request)
+    
+    v_conn_name=request.form.get('conn_name')
+    print('cpu_cores(): v_conn_name : ', v_conn_name)
+
+    con = get_db_connection(v_conn_name)
+    print ('cpu_cores(): ', con.version)
+    
+    if not con:
+       return []
+       
+    cursor = con.cursor()
+    cursor.execute("""select value from v$osstat where stat_name='NUM_CPU_CORES'""")
+    cpu_cores = cursor.fetchone()
+    print ('cpu_cores:', cpu_cores)
+    cursor.close()
+    return str(cpu_cores[0])
+	
 
 #--
 # provide data from SQL_MONITOR
@@ -189,9 +213,9 @@ def chart_data_ash_detail():
     v_conn_name=post_data_dict['conn_name']
     v_selected_instance=post_data_dict['selected_instance']
     #metric_list=post_data_dict['metric_names']
-    #start_date=post_data_dict['date_range'][0]
-    #end_date=post_data_dict['date_range'][1]
-    #print("date_range : ", start_date, end_date)
+    start_date=post_data_dict['date_range'][0]
+    end_date=post_data_dict['date_range'][1]
+    print("date_range : ", start_date, end_date)
     browser_tz_offset_sec=post_data_dict['browser_tz_offset_sec']
     browzer_tz_name=post_data_dict['browzer_tz_name']
     print("browzer_tz_name : ", browzer_tz_name)
@@ -212,59 +236,70 @@ def chart_data_ash_detail():
 
     v_sql="""
             with pivot_data AS (
-                select count(distinct session_id||'-'||session_serial#) as active_sessions,
-                    to_char(
-                            trunc( from_tz(sample_time,'{str1}') at time zone '{str2}','MI')
-                            , 'YYYY/MM/DD HH24:MI')
-                        as sample_time_browser_tz, 
-                    case when session_state = 'ON CPU' then 'ON CPU'
+				   select count(1)/5 as active_sessions
+                   ,to_char(
+							from_tz(sample_time,'{str1}') at time zone '{str2}'
+                               - mod(extract(second from sample_time), 5)/60/60/24 
+                            , 'YYYY/MM/DD HH24:MI:SS')
+                        as sample_time_browser_tz_5sec
+                   ,case when session_state = 'ON CPU' then 'ON CPU'
                     else wait_class end as activity_class
                 from v$active_session_history
-				where wait_class <> 'Idle'
+				where nvl(wait_class,'NONE') <> 'Idle'
+                  and sample_time between 
+                       cast((from_tz(cast(DATE '1970-01-01' as timestamp),'00:00') at time zone '{str2}') as date)
+                         + ( 1 / 24 / 60 / 60 )/1000 * :1 
+                       and 
+                       cast((from_tz(cast(DATE '1970-01-01' as timestamp),'00:00') at time zone '{str2}') as date)
+                         + ( 1 / 24 / 60 / 60 )/1000 * :2 
                 group by
-                    trunc( from_tz(sample_time,'{str1}') at time zone '{str2}','MI'), 
-                    case when session_state = 'ON CPU' then 'ON CPU'
+                    to_char(
+                            --from_tz(sample_time,'{str1}') at time zone '{str2}'
+							from_tz(sample_time,'{str1}') at time zone '{str2}'
+                               - mod(extract(second from sample_time), 5)/60/60/24 
+                            , 'YYYY/MM/DD HH24:MI:SS')
+                   ,case when session_state = 'ON CPU' then 'ON CPU'
                     else wait_class end 
                 )
             --
-            select  sample_time_browser_tz, 
-                    other,
-                    clustr,
-                    queueing,
-                    network,
-                    administrative,
-                    configuration,
-                    commit,
-                    application,
-                    concurrency,
-                    system_io,
-                    user_io,
-                    scheduler,
-                    cpu
+            select  sample_time_browser_tz_5sec
+                   ,other
+                   ,clustr
+                   ,queueing
+                   ,network
+                   ,administrative
+                   ,configuration
+                   ,commit
+                   ,application
+                   ,concurrency
+                   ,system_io
+                   ,user_io
+                   ,scheduler
+                   ,cpu
             from pivot_data
             pivot
             ( sum(active_sessions)
             for activity_class
                 in (
-                    'Other'          as other,
-                    'Cluster'        as clustr,
-                    'Queueing'       as queueing,
-                    'Network'        as network,
-                    'Administrative' as administrative,
-                    'Configuration'  as configuration,
-                    'Commit'         as commit,
-                    'Application'    as application,
-                    'Concurrency'    as concurrency,
-                    'System I/O'     as system_io,
-                    'User I/O'       as user_io,
-                    'Scheduler'      as scheduler,
-                    'ON CPU'         as cpu)
+                    'Other'          as other
+                   ,'Cluster'        as clustr
+                   ,'Queueing'       as queueing
+                   ,'Network'        as network
+                   ,'Administrative' as administrative
+                   ,'Configuration'  as configuration
+                   ,'Commit'         as commit
+                   ,'Application'    as application
+                   ,'Concurrency'    as concurrency
+                   ,'System I/O'     as system_io
+                   ,'User I/O'       as user_io
+                   ,'Scheduler'      as scheduler
+                   ,'ON CPU'         as cpu)
             )
-            order by sample_time_browser_tz desc""".format(str1=db_os_tz, str2=browzer_tz_name)
+            order by sample_time_browser_tz_5sec desc""".format(str1=db_os_tz, str2=browzer_tz_name)
 
     print(v_sql)
-    cursor.execute(v_sql)
-    #cursor.execute(v_sql, (start_date, end_date) )
+    #cursor.execute(v_sql)
+    cursor.execute(v_sql, (start_date, end_date) )
 
     # using streaming response technique 
     # per http://flask.pocoo.org/docs/0.10/patterns/streaming/#basic-usage
@@ -293,6 +328,8 @@ def chart_data_ash_summary():
     v_conn_name=post_data_dict['conn_name']
     v_selected_instance=post_data_dict['selected_instance']
     browzer_tz_name=post_data_dict['browzer_tz_name']
+    start_date=post_data_dict['date_range'][0]
+    end_date=post_data_dict['date_range'][1]
 
     con = get_db_connection(v_conn_name)
     
@@ -312,19 +349,25 @@ def chart_data_ash_summary():
     v_sql="""
     with pivot_data AS (
         select 
-            count(distinct session_id||'-'||session_serial#) as active_sessions,
+		    count(1)/30 as active_sessions,
             to_char(
                     trunc( from_tz(sample_time,'{str1}') at time zone '{str2}','MI') 
-                    - mod(extract(minute from from_tz(sample_time,'{str1}') at time zone '{str2}'), 5) 
+                    - mod(extract(minute from sample_time), 5)/60/24 
                     , 'YYYY/MM/DD HH24:MI')
                 as sample_time_browser_tz_5min, 
             case when session_state = 'ON CPU' then 'ON CPU'
                 else wait_class end as activity_class
         from DBA_HIST_ACTIVE_SESS_HISTORY 
-		where wait_class <> 'Idle'
+		where nvl(wait_class,'NONE') <> 'Idle'
+        and sample_time between 
+             cast((from_tz(cast(DATE '1970-01-01' as timestamp),'00:00') at time zone '{str2}') as date)
+               + ( 1 / 24 / 60 / 60 )/1000 * :1 
+             and 
+             cast((from_tz(cast(DATE '1970-01-01' as timestamp),'00:00') at time zone '{str2}') as date)
+               + ( 1 / 24 / 60 / 60 )/1000 * :2 
         group by
             trunc( from_tz(sample_time,'{str1}') at time zone '{str2}','MI') 
-                - mod(extract(minute from from_tz(sample_time,'{str1}') at time zone '{str2}'), 5), 
+                - mod(extract(minute from sample_time), 5)/60/24, 
             case when session_state = 'ON CPU' then 'ON CPU'
             else wait_class end
             )
@@ -366,7 +409,7 @@ def chart_data_ash_summary():
 
 
     print(v_sql)
-    cursor.execute(v_sql)
+    cursor.execute(v_sql, (start_date, end_date) )
 
     # using streaming response technique 
     # per http://flask.pocoo.org/docs/0.10/patterns/streaming/#basic-usage

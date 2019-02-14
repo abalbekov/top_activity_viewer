@@ -5,16 +5,16 @@ import {gl, waitClassObj}        from "./globals.js"
 // function to draw empty starter graph
 export function emptyGraph() {
 	
-	// initial data is two zero points 6 hours apart for detailed ...
+	// initial data is two zero points 1hr apart for detailed ...
 	if ((gl.gDataSource == "v$active_session_history")
 	   ||
 	   (gl.gDataSource == "rt_v$active_session_history"))
 	{
-		var startTime=new Date( (new Date()).getTime()-60*60*6*1000 );
+		var startTime=new Date( (new Date()).getTime()-60*60*1000 );
 		var endTime=new Date();
 	} else if (gl.gDataSource == "dba_hist_active_sess_history")
-	{ // or 1 week apart if summary ...
-		var startTime=new Date( (new Date()).getTime()-60*60*24*7*1000 );
+	{ // or 6hrs apart if summary ...
+		var startTime=new Date( (new Date()).getTime()-6*60*60*1000 );
 		var endTime=new Date();
 	}
 
@@ -25,21 +25,27 @@ export function emptyGraph() {
 	gl.dg = new Dygraph(
 		document.getElementById("chart_dygraph")
 		,[[startTime,0],[endTime,0]]
-		,{title: "Active Sessions"
-		 ,ylabel: 'Sessions'
-		 //,legend: 'always',
-		 ,dateWindow: [startTime.getTime(),endTime.getTime()]
-		 ,showRangeSelector: true
-		 ,showRoller: true
-		 ,rollPeriod: 10
-		 ,fillGraph : true
-		 ,showLabelsOnHighlight: false
-		 ,panEdgeFraction: 0.1
-		 ,strokeWidth: 2
-//		 ,width:"100%"
+		,{ylabel: 				'Active Sessions'
+		 ,labels:				['A','B']
+		 ,dateWindow: 			[startTime.getTime(), endTime.getTime()]
+		 ,showRangeSelector: 	true
+		 ,showRoller: 			true
+		 ,rollPeriod: 			10
+		 ,fillGraph : 			true
+         ,fillAlpha:  			1.0
+         //,stepPlot:			true
+         ,stackedGraph:			true
+         ,stackedGraphNaNFill:	"none"
+		 ,showLabelsOnHighlight:false
+		 ,panEdgeFraction: 		0.1
+		 ,strokeWidth: 			1
 		}
 	);
 
+	// add zoom elements
+	
+	
+	
 	// add custom mouseup handler to request more data
 	$("#chart_dygraph canvas, .dygraph-rangesel-fgcanvas, .dygraph-rangesel-zoomhandle")
 		.mouseup(function(e) {
@@ -48,12 +54,12 @@ export function emptyGraph() {
 			// and if the pan action moved chart to the edge beyond 
 			// data received from datasource so far,
 			// then request more data
-			if (gl.gDataSource=='v$active_session_history'
-				&&
-				( gl.dg.xAxisRange()[0]<gl.minDownloadedDate
+			//if (gl.gDataSource=='v$active_session_history'
+			//	&&
+			if ( gl.dg.xAxisRange()[0]<gl.minDownloadedDate
 				  || 
 				  gl.dg.xAxisRange()[0]>gl.maxDownloadedDate )
-				){
+			{
 				buildGraph();
 			};
 		})
@@ -101,29 +107,24 @@ export function buildGraph(){
 			$(".loader").hide();
 			var displayData;
 			var newData=csvToArray(this.responseText);
-			if (gl.gDataSource=='v$active_session_history'){
+			//if (gl.gDataSource=='v$active_session_history'){
 				// for detailed chart we download only portion
 				// since full range may take too long
 				// here we splice newly downloaded data with previously downloaded 
 				// (stored in gChartDataDetail)
 				// and display spliced data 
-				displayData=spliceData(newData,gl.gChartDataDetail);
-			} else {
-				displayData=newData;
-			};
+				displayData=spliceData(newData,gl.gChartData);
+			//} else {
+			//	displayData=newData;
+			//};
 			// update chart if there is anything to display
 			if (displayData.length > 0){
 				gl.dg.updateOptions({
 					file: 				displayData
-					,title: 			"Active Sessions"
 					,labels: 			labelsArr
 					,colors:			colorsArr
-					,fillAlpha:			0.75
 					,showRangeSelector: true
-					,fillGraph: 		true
-					//,stepPlot: 			true
-					,stackedGraph:		true
-					,stackedGraphNaNFill: "none"
+					,valueRange:		[0, gl.gCpuCoreCount]
 				});
 			}
 		};
@@ -136,10 +137,10 @@ export function buildGraph(){
 		xhr.onloadend = function (e) {
 			var displayData;
 			var newData=csvToArray(this.responseText);
-			if (gl.gDataSource=='v$active_session_history'){
-				gl.gChartDataDetail=spliceData(newData,gl.gChartDataDetail);
-				displayData=gl.gChartDataDetail;
-			} else {displayData=newData;};
+			//if (gl.gDataSource=='v$active_session_history'){
+				gl.gChartData=spliceData(newData,gl.gChartData);
+				displayData=gl.gChartData;
+			//} else {displayData=newData;};
 			if (displayData.length > 0){
 				gl.dg.updateOptions({file: displayData});
 			}
@@ -150,81 +151,40 @@ export function buildGraph(){
 		//console.log(JSON.stringify(metricsObj));
 }
 
-// function to extract visible chart date range
-// and return as javascript dates
-export function getDateRange() {
-	var visibleBeginDate=gl.dg.xAxisRange()[0];
-	var visibleEndDate=gl.dg.xAxisRange()[1];
-	// initially dateWindow is defined as Date
-	// but then if chart range was manually moved on the screen
-	// dateWindow boundaries become number of epoch millisec (duh..)
-	// convert millisec to Date
-	if (visibleBeginDate.toFixed) {
-		visibleBeginDate=new Date(visibleBeginDate);
-		visibleEndDate=new Date(visibleEndDate);
-	}
-	return [visibleBeginDate, visibleEndDate];
-}
-	
 // Function to determine chart date range to extract from backend.
 // This is different from visible chart date range
 // because we will pre-fetch data.
-// As first approach we will expand the visible range by its width on left and right.
+//
+// At first we will expand the visible range by its width on left and right.
 // Then we will determine if part of this range was already loaded
 // and if it was then adjust to reduce the range for subsequent splice.
 //
-// This splicing approach will be used with detailed chart (DBA_HIST_SYSMETRIC_HISTORY)
-// because to retrieve full range may be too long
-// For summary chart (DBA_HIST_SYSMETRIC_SUMMARY) splicing is not necessary 
-// as full range can be retrieved in resonable time
-//
-// Returns millisec since epoch in browser timezone
+// Returns millisec since epoch
 //
 function getDateRangeMs() {
 	//var tzOffsetMs=new Date().getTimezoneOffset()*60*1000;
 	// following https://danielcompton.net/2017/07/06/detect-user-timezone-javascript
 	//tzName=Intl.DateTimeFormat().resolvedOptions().timeZone;
 	
-	// for summary datasource we retrieve full available date range (1 month )
-	if (gl.gDataSource=='dba_hist_active_sess_history') {
-		var endDate  =(new Date()).getTime();
-		var beginDate=endDate-30*24*60*60*1000;
-		return [beginDate, endDate]
+	var beginDate=gl.dg.xAxisRange()[0];
+	var endDate=gl.dg.xAxisRange()[1];
+	var width=endDate-beginDate;
+
+	// expand range by window width
+	beginDate-=2*width;
+	endDate  +=2*width;
+	// reduce range by amount of already downloaded data
+	if (beginDate < gl.minDownloadedDate) {
+		endDate  = Math.min(endDate,   gl.minDownloadedDate-1000);
 	}
-
-	// for detail datasource we retrieve only add-on date range
-	if (gl.gDataSource=='v$active_session_history') {
-		var b=gl.dg.xAxisRange()[0];
-		var e=gl.dg.xAxisRange()[1];
-		var width=e-b;
-
-		// initially dateWindow is defined as Date
-		// but then if chart range was manually moved on the screen
-		// dateWindow boundaries become number of epoch millisec (duh..)
-		// convert Date to millisec
-		if (b.getTime) {
-			var beginDate=b.getTime();
-			var endDate  =e.getTime();
-		} else {
-			var beginDate=b;
-			var endDate  =e;		
-		}
-		// expand range by window width
-		beginDate-=2*width;
-		endDate  +=2*width;
-		// reduce range by amount of already downloaded data
-		if (beginDate < gl.minDownloadedDate) {
-			endDate  = Math.min(endDate,   gl.minDownloadedDate-1000);
-		}
-		if (endDate > gl.maxDownloadedDate) {
-			beginDate  = Math.max(beginDate,   gl.maxDownloadedDate+1000);
-		}
-		// end date can not be in the future
-		endDate = Math.min(endDate, (new Date()).getTime());
-
-		//return [beginDate-tzOffsetMs, endDate-tzOffsetMs];
-		return [beginDate, endDate];
+	if (endDate > gl.maxDownloadedDate) {
+		beginDate  = Math.max(beginDate,   gl.maxDownloadedDate+1000);
 	}
+	// end date can not be in the future
+	endDate = Math.min(endDate, (new Date()).getTime());
+
+	//return [beginDate-tzOffsetMs, endDate-tzOffsetMs];
+	return [beginDate, endDate];
 }
 	
 // convert CSV text to array
@@ -259,7 +219,7 @@ function csvToArray(csvData) {
 	return csvData;
 }
     
-// function to splice new detail data and previously downloaded data arrays
+// function to splice new data array and previously downloaded data array
 function spliceData(newData,oldData) {
 	
 	if (newData.length == 0) { 
@@ -288,9 +248,10 @@ function spliceData(newData,oldData) {
 						return a[0]-b[0];
 					});
 	}			
-	// save new min/max downloaded dates
+	// save new min/max downloaded dates and newData
 	gl.maxDownloadedDate=(newData[newData.length-1][0]).getTime();
 	gl.minDownloadedDate=(newData[0][0]).getTime();
+	gl.gChartData=newData;
 	return newData;
 }
 
@@ -307,7 +268,9 @@ export function defineLegend(){
 		.on( 'mouseenter', 'li', function () {
 			// highlight time series
 			gl.dg.colorsMap_[this.textContent]="#FFFF00"; //yellow
-			gl.dg.updateOptions({});
+			var newOptions = {};
+			newOptions[this.textContent] = {strokeWidth: 1};
+			gl.dg.updateOptions({series: newOptions});
 			// highlight legend item
 			$(this).toggleClass(this.className).toggleClass("legend_highlighted");
 			//stop bubbling
@@ -317,10 +280,11 @@ export function defineLegend(){
 		.on( 'mouseleave', 'li', function () {
 			// unhighlight time series
 			gl.dg.colorsMap_[this.textContent]=waitClassObj[this.id][1];
-			gl.dg.updateOptions({});
+			gl.dg.updateOptions({strokeWidth: 1});
 			// unhighlight legend item
 			$(this).toggleClass(this.className).toggleClass("legend_"+this.id);
 			//stop bubbling
 			return false;}
 		  );
    }
+

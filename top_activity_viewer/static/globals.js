@@ -3,9 +3,10 @@ let gl={
      'gDbCredential'        : ""
 	,'gRacInstSelected'     : 'all-aggregate'	// can be 'all-aggregate','all-stacked' or instance number
 	,'gRacInstanceCnt'      : 1
+	,'gCpuCoreCount'		: 1
 	,'gDataSource'          : 'v$active_session_history'
 	//,'gDbaHistSourcexAxisRange':[]
-	,'gChartDataDetail'     : [] // data loaded so far
+	,'gChartData'           : [] // data loaded so far
 	,'dg'                   : {} // dygraph object
 	,'maxDownloadedDate'    : undefined
 	,'minDownloadedDate'    : undefined

@@ -21,6 +21,7 @@ export function defineConnections(){
 					//$('#chart_stats').select2({placeholder: "... loading metrics ..."});
 					// check how many RAC instances this connection has
 					getRACInstances();
+					getCpuCoreCount();
 					// when connection is selected, 
 					// clear chart and previously downloaded data
 					gl.maxDownloadedDate=(new Date()).getTime()+30*24*60*60*1000; // fake date in the future
@@ -36,3 +37,13 @@ export function defineConnections(){
 
 			  })
 };
+
+// function to get Cpu core counts; this will be used as upper boundary in the graph
+function getCpuCoreCount(){
+	$.post(gl.api_root+'/cpu_cores', 
+		  {conn_name: gl.gDbCredential},
+		  function(cpuCount) {
+			gl.gCpuCoreCount=cpuCount;
+		  }
+	);
+}

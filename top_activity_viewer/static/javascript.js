@@ -21,5 +21,13 @@ jQuery(document).ready(function() {
 	$(".loader").css({ left: loaderLeft });
 	$(".loader").css({ top : loaderTop  });
 	$(".loader").hide();
+
+	// zoom control click handler
+	$(".zoom .fa-plus-square-o").click(function(){
+		gl.dg.updateOptions({valueRange: [0, gl.dg.yAxisRange()[1]/2]});
+	});
+	$(".zoom .fa-minus-square-o").click(function(){
+		gl.dg.updateOptions({valueRange: [0, gl.dg.yAxisRange()[1]*2]});
+	});
 	
 });

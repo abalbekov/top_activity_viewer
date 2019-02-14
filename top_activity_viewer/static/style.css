@@ -22,7 +22,8 @@ html, body {
 .chart {
 	display: inline-block;
 	position: relative;
-	width: 60%;
+	width: 80%;
+	min-width: 400px;
 }
 #chart_dygraph {
 	width: 100% !important;
@@ -76,6 +77,14 @@ html, body {
   100% { transform: rotate(360deg); }
 }
 
+/* zoom control */
+.zoom {
+  position: absolute;
+  top: 2em;
+  left: 5em;
+  z-index: 1;
+}
+
 .outer {
 	/*position:relative;*/
 	width=90%;
@@ -90,6 +99,7 @@ html, body {
 	vertical-align: top;
 	position:relative;
 	margin-left: 1em;
+	margin-right: 1em;
 	min-width: 200px;
 	width: 15%;
 	
@@ -111,18 +121,18 @@ html, body {
     margin:0 5px 0 -15px;
 }
 
+li.legend_other:before 			{color: #F06EAA;}
+li.legend_clustr:before 		{color: #C9C2AF;}
+li.legend_queueing:before 		{color: #C2B79B;}
+li.legend_network:before 		{color: #9F9371;}
 li.legend_administrative:before {color: #6B7051;}
-li.legend_application:before 	{color: #C22600;}
-li.legend_clustr:before 		{color: #D2C2B3;}
+li.legend_configuration:before 	{color: #5C440B;}
 li.legend_commit:before 		{color: #E46800;}
-li.legend_concurrency:before 	{color: #8C1800;}
-li.legend_configuration:before 	{color: #604300;}
-li.legend_network:before 		{color: #9D9169;}
-li.legend_other:before 			{color: #F16DAE;}
-li.legend_queueing:before 		{color: #C5B6A0;}
-li.legend_scheduler:before 		{color: #84FA8E;}
+li.legend_application:before 	{color: #C02800;}
+li.legend_concurrency:before 	{color: #8B1A00;}
 li.legend_system_io:before 		{color: #0094EC;}
-li.legend_user_io:before 		{color: #004CE6;}
-li.legend_cpu:before 			{color: #00AA00;}
+li.legend_user_io:before 		{color: #004AE7;}
+li.legend_scheduler:before 		{color: #CCFFCC;}
+li.legend_cpu:before 			{color: #00CC00;}
 li.legend_highlighted:before 	{color: #FFFF00;}
 

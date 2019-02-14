@@ -21,30 +21,31 @@ export function defineChartSrcSel(){
 		$('.chart h2').text(selectedValue);
 
 		// clear downloaded data
-		gl.gChartDataDetail=[];
-		gl.minDownloadedDate=gl.maxDownloadedDate;
-
+		gl.gChartData=[];
+		
 		// change visible chart date window
 		var newEnd=new Date();
 		if (selectedValue=='v$active_session_history' 
 			||
 			selectedValue=='realtime v$session_wait' )
-		{	// for details the source resolution is 1 mins
-			// set window to 240*1 mins
-			var newBegin=new Date( newEnd.getTime()-240*60*1000);
+		{	// for details set window to 1hr
+			var newBegin=new Date( newEnd.getTime()-60*60*1000);
 			var newRollPeriod=10;
-			//var newEnd  =new Date( curRange[0].getTime()+curWidthMs+240*60*1000);
 		}
 		else {
-			// for summary the source resolution is about 30min-1hr
-			// set window to 240*30 mins
-			var newBegin=new Date( newEnd.getTime()-240*30*60*1000);
+			// for dba_hist_active_sess_history set window to 6hrs
+			var newBegin=new Date( newEnd.getTime()-6*60*60*1000);
 			var newRollPeriod=3;
 		}
+
+		// for initially empty graph fake downloaded date in the future
+		gl.maxDownloadedDate=newBegin.getTime()+30*24*60*60*1000;
+		gl.minDownloadedDate=gl.maxDownloadedDate;
 
 		// and redraw graph
 		gl.dg.updateOptions({
 						 file      : [[newBegin,0],[newEnd,0]]
+						,labels    : ['A','B']
 						,dateWindow: [newBegin.getTime(),newEnd.getTime()]
 						,rollPeriod: newRollPeriod});
 		buildGraph();
