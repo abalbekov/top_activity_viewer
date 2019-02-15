@@ -136,3 +136,9 @@ li.legend_scheduler:before 		{color: #CCFFCC;}
 li.legend_cpu:before 			{color: #00CC00;}
 li.legend_highlighted:before 	{color: #FFFF00;}
 
+.fa-minus-square-o:hover, .fa-plus-square-o:hover {
+    color: red;
+    cursor: pointer;
+}
+
+
