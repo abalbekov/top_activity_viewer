@@ -56,15 +56,23 @@
 				<h2>v$active_session_history</h2>
 				<div id="chart_dygraph" style="width:30em; min-width:200px;"></div>
 				<div class="loader"></div>
-				<div class="zoom">
-					<i class="fa fa-minus-square-o" aria-hidden="true"></i>
-					<i class="fa fa-plus-square-o"  aria-hidden="true"></i>
+				<div id="controls">
+					<div id="zoom">
+						<i class="fa fa-minus-square-o" aria-hidden="true"></i>
+						<i class="fa fa-plus-square-o"  aria-hidden="true"></i>
+					</div>
+					<div id="pan-select-toggle">
+						<i class="fa fa-stop-circle"></i>
+						<span>Pan</span>
+					</div>
 				</div>
 			</div>
 			<div id="legend">
 				<h2>Legend</h2>
 				<ul></ul>
 			</div>
+		</div>
+		<div id="selected_range" disabled>
 		</div>
 		<script type="module" src="/static/javascript.js"></script>
 	</body>

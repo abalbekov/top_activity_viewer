@@ -1,7 +1,11 @@
 
 
--- to run this project:
-cmd
+-- to run this project with Docker:
+-----------------------------------
+
+-- 1. Download project zip file from Github and unzip into an empty directory
+
+-- 2. start a target database, ex. Oracle docker container
 docker start ora122
 	-- if after windows reboot
 	docker: Error response from daemon: 
@@ -11,6 +15,12 @@ docker start ora122
 			input/output error.
 	-- then restart docker and repeat
 	
-cd C:\Users\admin\Documents\dated_logs\20190204 top_activity_viewer\project
-start_app.bat
+-- 2. start the app
+cd <project dir>
+start_app_docker.bat
+
+-- 3. open application webpage at 
+	http://localhost:5000/static/main.html
+
+
 

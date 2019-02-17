@@ -1,0 +1,38 @@
+
+
+-- to run this project on local PC:
+-----------------------------------
+
+-- on Windows PC
+
+-- Prerequisites:
+	Installed Python, Flask, cx_Oracle
+
+-- 1. Download project zip file from Github and unzip into an empty directory
+
+-- 2. set environment variable(s) with target database connection string.
+	Format:
+		set db_<alias>=<connection string>
+	
+	Connection string can be anything cx_Oracle.connection understands.
+	
+	One option is EZ_Connect syntax: "username/password@host:port/service"
+	Example:
+		set db_oradb1="user/psw@oradb1:1521/ORCLCDB.localdomain"
+		set db_oradb2="user/psw@oradb2:1521/ORCLCDB.localdomain"
+		...
+
+	If encrypted Oracle wallet is set up then connection syntax can be "/@tnsnames-alias"
+	Example:
+	
+		set db_oradb3="/@oradb3"
+		set db_oradb4="/@oradb4"
+		...	
+-- 3. start the app
+cd <project dir>
+python app.py
+
+-- 4. open application webpage at 
+	http://localhost:5000/static/main.html
+
+

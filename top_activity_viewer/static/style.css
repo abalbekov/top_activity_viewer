@@ -77,14 +77,6 @@ html, body {
   100% { transform: rotate(360deg); }
 }
 
-/* zoom control */
-.zoom {
-  position: absolute;
-  top: 2em;
-  left: 5em;
-  z-index: 1;
-}
-
 .outer {
 	/*position:relative;*/
 	width=90%;
@@ -136,9 +128,39 @@ li.legend_scheduler:before 		{color: #CCFFCC;}
 li.legend_cpu:before 			{color: #00CC00;}
 li.legend_highlighted:before 	{color: #FFFF00;}
 
-.fa-minus-square-o:hover, .fa-plus-square-o:hover {
-    color: red;
-    cursor: pointer;
+
+/* zoom and pan/select controls */
+#controls {
+  position: absolute;
+  top: 2em;
+  left: 5em;
+  z-index: 1;
+  font-size: 1em;
 }
-
-
+#zoom {
+	display: block;
+	text-align: center;
+}
+#pan-select-toggle {
+	display: block;
+	text-align: center;
+}
+#pan-select-toggle span{
+    width: 5em;
+}
+.fa-stop-circle, .fa-stop-circle-o {
+	display: block;
+	font-size: 1.2em;
+}
+.fa-minus-square-o, .fa-plus-square-o {
+	font-size: 1.2em;
+}
+.fa-minus-square-o:hover, 
+.fa-plus-square-o:hover, 
+.fa-stop-circle:hover, 
+.fa-stop-circle-o:hover, 
+#pan-select-toggle span:hover
+{
+    color: red;
+	cursor: pointer;
+}

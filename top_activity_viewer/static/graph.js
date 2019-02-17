@@ -22,18 +22,79 @@ export function emptyGraph() {
 	gl.maxDownloadedDate=startTime.getTime()+30*24*60*60*1000;
 	gl.minDownloadedDate=gl.maxDownloadedDate;
 	
+	// define interaction model object
+	var interactionModel= {
+		'mousedown': function (event, g, context){
+				context.initializeMouseDown(event, g, context);
+				// clear any highlights
+				g.updateOptions({ underlayCallback: null });
+				// clear "selected range ..." wording
+				$("#selected_range").hide();
+				
+				if (gl.panSelectToggle=='select') {
+					Dygraph.startZoom(event, g, context);
+				}
+				else if (gl.panSelectToggle=='pan'){
+					Dygraph.startPan(event, g, context);
+				}
+				// save current range for later
+				gl.mouseDownDateWindow=gl.dg.xAxisRange();
+		},
+			
+		'mousemove': function (event, g, context){
+			if (gl.panSelectToggle=='select' && context.isZooming) {
+				Dygraph.moveZoom(event, g, context);
+			}
+			else if (gl.panSelectToggle=='pan' && context.isPanning){
+				context.is2DPan = false; // pan only along X axis
+				Dygraph.movePan(event, g, context);
+		}},
+			
+		'mouseup'  : function (event, g, context){
+			if (gl.panSelectToggle=='select' && context.isZooming ){
+				Dygraph.endZoom(event, g, context);
+				// only consider it a selection if mouseup is not too close to mousedown
+				if ((g.xAxisRange()[0]-gl.mouseDownDateWindow[0]) /
+				    (g.xAxisRange()[1]-g.xAxisRange()[0]) > 0.05 ) {
+						// effectively cancel zooming by redrawing with intial mousedown date range
+						// and highlight zoomed area
+						gl.selectedDateWindow=g.xAxisRange();
+						gl.dg.updateOptions({
+							dateWindow: gl.mouseDownDateWindow
+							,underlayCallback: function(canvas, area, g) {
+								var bottom_left = g.toDomCoords(gl.selectedDateWindow[0], -20);
+								var top_right = g.toDomCoords(gl.selectedDateWindow[1], +20);
+								var left = bottom_left[0];
+								var right = top_right[0];
+								canvas.fillStyle = "rgba(255, 204, 0, 1.0)";
+								canvas.fillRect(left, area.y, right - left, area.h);
+							}
+						});
+						// print selected date range under the chart
+						$("#selected_range").text("Selected Range:"+
+												   new Date(gl.selectedDateWindow[0]).toString()+
+												   " - "+
+												   new Date(gl.selectedDateWindow[1]).toString())
+						.show();
+					}
+			}
+			else if (gl.panSelectToggle=='pan' && context.isPanning){
+				Dygraph.endPan(event, g, context);
+			}
+		}
+	};
+
 	gl.dg = new Dygraph(
 		document.getElementById("chart_dygraph")
 		,[[startTime,0],[endTime,0]]
 		,{ylabel: 				'Active Sessions'
 		 ,labels:				['A','B']
 		 ,dateWindow: 			[startTime.getTime(), endTime.getTime()]
-		 ,showRangeSelector: 	true
+		 ,interactionModel:		interactionModel
 		 ,showRoller: 			true
 		 ,rollPeriod: 			10
 		 ,fillGraph : 			true
          ,fillAlpha:  			1.0
-         //,stepPlot:			true
          ,stackedGraph:			true
          ,stackedGraphNaNFill:	"none"
 		 ,showLabelsOnHighlight:false
@@ -42,20 +103,16 @@ export function emptyGraph() {
 		}
 	);
 
-	// add zoom elements
-	
-	
+	// separately add Range Selector so that interactionModel is not lost
+	gl.dg.updateOptions({showRangeSelector: true});
 	
 	// add custom mouseup handler to request more data
 	$("#chart_dygraph canvas, .dygraph-rangesel-fgcanvas, .dygraph-rangesel-zoomhandle")
 		.mouseup(function(e) {
-            //console.log("mouseup detected");
-			// if datasource is history
-			// and if the pan action moved chart to the edge beyond 
+            console.log("mouseup detected");
+			// if the pan action moved chart to the edge beyond 
 			// data received from datasource so far,
 			// then request more data
-			//if (gl.gDataSource=='v$active_session_history'
-			//	&&
 			if ( gl.dg.xAxisRange()[0]<gl.minDownloadedDate
 				  || 
 				  gl.dg.xAxisRange()[0]>gl.maxDownloadedDate )
@@ -64,7 +121,13 @@ export function emptyGraph() {
 			};
 		})
 		.mousedown(function(e) {
+			// save current date range on mousedown in "select" mode 
+			// in case it is start of range selection
             console.log("mousedown detected");
+			//if ( gl.panSelectToggle == 'select' ){
+			//	//gl.mouseDownDateWindow=gl.dg.xAxisRange();
+			//	gl.dg.updateOptions({ interactionModel:{} }); 
+			//}
 		});
 }
 
@@ -123,7 +186,7 @@ export function buildGraph(){
 					file: 				displayData
 					,labels: 			labelsArr
 					,colors:			colorsArr
-					,showRangeSelector: true
+					//,showRangeSelector: true
 					,valueRange:		[0, gl.gCpuCoreCount]
 				});
 			}

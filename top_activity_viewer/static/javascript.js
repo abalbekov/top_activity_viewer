@@ -23,11 +23,28 @@ jQuery(document).ready(function() {
 	$(".loader").hide();
 
 	// zoom control click handler
-	$(".zoom .fa-plus-square-o").click(function(){
+	$("#zoom .fa-plus-square-o").click(function(){
 		gl.dg.updateOptions({valueRange: [0, gl.dg.yAxisRange()[1]/2]});
 	});
-	$(".zoom .fa-minus-square-o").click(function(){
+	$("#zoom .fa-minus-square-o").click(function(){
 		gl.dg.updateOptions({valueRange: [0, gl.dg.yAxisRange()[1]*2]});
+	});
+	
+	// pan/select control click handler
+	$("#pan-select-toggle").click(function(){
+		var $icon=$(this).children(":first");
+		if ( gl.panSelectToggle=='select' ) {
+			 $icon.removeClass("fa-stop-circle-o")
+				  .toggleClass("fa-stop-circle");
+			 $(this).children("span").text("Pan");
+			 gl.panSelectToggle='pan';
+		}
+		else if ( gl.panSelectToggle='pan' ) {
+			 $icon.removeClass("fa-stop-circle")
+			      .toggleClass("fa-stop-circle-o");
+			 $(this).children("span").text("Sel");
+			 gl.panSelectToggle='select';
+		};
 	});
 	
 });

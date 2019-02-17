@@ -12,6 +12,9 @@ let gl={
 	,'minDownloadedDate'    : undefined
 	,'api_root'				: ''
 	//,'api_root'			: 'https://u6pic3x198.execute-api.us-east-1.amazonaws.com/dev'
+	,'panSelectToggle'		: 'pan'
+	,'mouseDownDateWindow'	: []
+	,'selectedDateWindow'	: []
 };
 
 let waitClassObj={
