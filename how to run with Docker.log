@@ -14,13 +14,29 @@ docker start ora122
 			mkdir /port/tcp:0.0.0.0:5000:tcp:172.17.0.2:5000: 
 			input/output error.
 	-- then restart docker and repeat
+
+The target database does not have to run under Docker.
+It can be any local or remote Oracle database.
+In this case the "start_app_docker.bat" needs to be edited to modify this connection environment variable:
+	-e db_ora122="system/Oradoc_db1@oradb:1521/ORCLCDB.localdomain"
+
+There can be multiple target databases. 
+Each target database must have corresponding connection environment variable in "start_app_docker.bat".
+
+Connections must use an account having select access to following database views:
+	GV$ACTIVE_SESSION_HISTORY
+	DBA_HIST_ACTIVE_SESSION
+	GV$INSTANCE
 	
+Target databases must have Diagnostics Pack option enabled or the ASH views will be empty.
+WARNING: Use of Diagnostics Pack requires a separate license, available for Oracle Enterprize Edition.
+
 -- 2. start the app
 cd <project dir>
 start_app_docker.bat
 
 -- 3. open application webpage at 
-	http://localhost:5000/static/main.html
+http://localhost:5000/static/main.html
 
 
 
