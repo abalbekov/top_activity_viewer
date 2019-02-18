@@ -26,10 +26,12 @@ export function emptyGraph() {
 	var interactionModel= {
 		'mousedown': function (event, g, context){
 				context.initializeMouseDown(event, g, context);
-				// clear any highlights
-				g.updateOptions({ underlayCallback: null });
-				// clear "selected range ..." wording
-				$("#selected_range").hide();
+				if (gl.panSelectToggle=='select'){
+					// clear any highlights
+					g.updateOptions({ underlayCallback: null });
+					// clear "selected range ..." wording
+					$("#selected_range").hide();
+				}
 				
 				if (gl.panSelectToggle=='select') {
 					Dygraph.startZoom(event, g, context);

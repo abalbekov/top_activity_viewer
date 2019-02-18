@@ -1,6 +1,6 @@
 html, body {
 	font-family: sans-serif;
-	html, body { font-size: 90%; }   /* Desktop */ 
+	font-size: 90%;    /* Desktop */ 
 }
 
 @media screen and (max-width: 400px) /* Mobile  */ {
@@ -9,7 +9,7 @@ html, body {
 
 /*-- other elements --*/
 #chart_source {
-	font-size: 1em;
+	font-size: 1rem;
 }
 
 #chart_stats, #conn_selector, #chart_source, #rac_instance1 {
@@ -46,8 +46,8 @@ html, body {
 .dygraph-axis-label.dygraph-axis-label-x,
 .dygraph-axis-label.dygraph-axis-label-y,
 .dygraph-legend {
-	font-size: 1em;
-	font-weight: bold;
+	font-size: 1rem;
+	/*font-weight: bold; */
 }
 
 /*-- Spinner animation --*/
