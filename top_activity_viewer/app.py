@@ -238,7 +238,7 @@ def chart_data_ash_detail():
             with pivot_data AS (
 				   select count(1)/5 as active_sessions
                    ,to_char(
-							from_tz(sample_time,'{str1}') at time zone '{str2}'
+                            from_tz(sample_time,'{str1}') at time zone '{str2}'
                                - mod(extract(second from sample_time), 5)/60/60/24 
                             , 'YYYY/MM/DD HH24:MI:SS')
                         as sample_time_browser_tz_5sec
@@ -247,15 +247,14 @@ def chart_data_ash_detail():
                 from v$active_session_history
 				where nvl(wait_class,'NONE') <> 'Idle'
                   and sample_time between 
-                       cast((from_tz(cast(DATE '1970-01-01' as timestamp),'00:00') at time zone '{str2}') as date)
+                       cast((from_tz(cast(DATE '1970-01-01' as timestamp),'00:00') at time zone '{str1}') as date)
                          + ( 1 / 24 / 60 / 60 )/1000 * :1 
                        and 
-                       cast((from_tz(cast(DATE '1970-01-01' as timestamp),'00:00') at time zone '{str2}') as date)
+                       cast((from_tz(cast(DATE '1970-01-01' as timestamp),'00:00') at time zone '{str1}') as date)
                          + ( 1 / 24 / 60 / 60 )/1000 * :2 
                 group by
                     to_char(
-                            --from_tz(sample_time,'{str1}') at time zone '{str2}'
-							from_tz(sample_time,'{str1}') at time zone '{str2}'
+                            from_tz(sample_time,'{str1}') at time zone '{str2}'
                                - mod(extract(second from sample_time), 5)/60/60/24 
                             , 'YYYY/MM/DD HH24:MI:SS')
                    ,case when session_state = 'ON CPU' then 'ON CPU'
@@ -360,10 +359,10 @@ def chart_data_ash_summary():
         from DBA_HIST_ACTIVE_SESS_HISTORY 
 		where nvl(wait_class,'NONE') <> 'Idle'
         and sample_time between 
-             cast((from_tz(cast(DATE '1970-01-01' as timestamp),'00:00') at time zone '{str2}') as date)
+             cast((from_tz(cast(DATE '1970-01-01' as timestamp),'00:00') at time zone '{str1}') as date)
                + ( 1 / 24 / 60 / 60 )/1000 * :1 
              and 
-             cast((from_tz(cast(DATE '1970-01-01' as timestamp),'00:00') at time zone '{str2}') as date)
+             cast((from_tz(cast(DATE '1970-01-01' as timestamp),'00:00') at time zone '{str1}') as date)
                + ( 1 / 24 / 60 / 60 )/1000 * :2 
         group by
             trunc( from_tz(sample_time,'{str1}') at time zone '{str2}','MI') 
