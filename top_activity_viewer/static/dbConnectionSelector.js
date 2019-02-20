@@ -3,6 +3,7 @@ import {getRACInstances}       from "./racInstanceSelector.js"
 import {emptyGraph,buildGraph} from "./graph.js"
 import {defineChartSrcSel}     from "./chartSourceSelector.js"
 //import {loadSqlMonData,createSqlMonDataTable} from "./sqlMonitorDataTable.js"
+import {activateLegend}			from "./legend.js"
 
 export function defineConnections(){
 	$.getJSON(gl.api_root+'/get_credentials', 
@@ -33,6 +34,8 @@ export function defineConnections(){
 					// enable chart source select (it is initially disabled)
 					//$('#chart_source option').removeProp('disabled');
 					//$('#chart_source').select2('destroy').select2();
+					// enable legend interaction
+					activateLegend();
 				});
 
 			  })

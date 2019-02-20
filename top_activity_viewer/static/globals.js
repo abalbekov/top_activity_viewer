@@ -1,10 +1,12 @@
 // store and exchange Globals between modules
 let gl={ 
      'gDbCredential'        : ""
-	,'gRacInstSelected'     : 'all-aggregate'	// can be 'all-aggregate','all-stacked' or instance number
+	,'gRacInstSelected'     : 'all'	// can be 'all' or instance number
 	,'gRacInstanceCnt'      : 1
 	,'gCpuCoreCount'		: 1
 	,'gDataSource'          : 'v$active_session_history'
+	,'gSelectedWaitClass'	: 'all' // can be 'all' or one of wait classes from waitClassObj below
+	,'gSelectedWaitEvents'	: []
 	//,'gDbaHistSourcexAxisRange':[]
 	,'gChartData'           : [] // data loaded so far
 	,'dg'                   : {} // dygraph object
@@ -18,17 +20,17 @@ let gl={
 };
 
 let waitClassObj={
-	 'other'         : ["Other"			,"#F16DAE"]
+	 'other'         : ["Other"			,"#F06EAA"]
 	,'clustr'        : ["Cluster"		,"#D2C2B3"]
 	,'queueing'      : ["Queueing"		,"#C5B6A0"]
 	,'network'       : ["Network"		,"#9D9169"]
 	,'administrative': ["Administrative","#6B7051"]
 	,'configuration' : ["Configuration"	,"#604300"]
 	,'commit'        : ["Commit"		,"#E76805"]
-	,'application'   : ["Application"	,"#C22B08"]
-	,'concurrency'   : ["Concurrency"	,"#8B1902"]
-	,'system_io'     : ["System I/O"	,"#0094EC"]
-	,'user_io'       : ["User I/O"		,"#004CE6"]
+	,'application'   : ["Application"	,"#C02800"]
+	,'concurrency'   : ["Concurrency"	,"#8B1A00"]
+	,'system_io'     : ["System I/O"	,"#0094E7"]
+	,'user_io'       : ["User I/O"		,"#004AE7"]
 	,'scheduler'     : ["Scheduler"		,"#84FA8E"]
 	,'cpu'           : ["CPU"			,"#00BB00"]
 };

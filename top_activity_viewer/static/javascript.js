@@ -1,8 +1,9 @@
-import {gl}                      			from "./globals.js"
-//import {defineTabs}            			from "./tabs.js"
-import {defineChartSrcSel}     				from "./chartSourceSelector.js"
-import {emptyGraph,buildGraph,defineLegend}	from "./graph.js"
-import {defineConnections}     				from "./dbConnectionSelector.js"
+import {gl}                     from "./globals.js"
+//import {defineTabs}           from "./tabs.js"
+import {defineChartSrcSel}     	from "./chartSourceSelector.js"
+import {emptyGraph,buildGraph}	from "./graph.js"
+import {defineLegend}			from "./legend.js"
+import {defineConnections}     	from "./dbConnectionSelector.js"
 
 jQuery(document).ready(function() {
 	

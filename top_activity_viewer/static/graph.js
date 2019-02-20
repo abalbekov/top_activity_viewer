@@ -68,7 +68,8 @@ export function emptyGraph() {
 								var top_right = g.toDomCoords(gl.selectedDateWindow[1], +20);
 								var left = bottom_left[0];
 								var right = top_right[0];
-								canvas.fillStyle = "rgba(255, 204, 0, 1.0)";
+								//canvas.fillStyle = "rgba(255, 204, 0, 1.0)";
+								canvas.fillStyle = "#FFD37F";
 								canvas.fillRect(left, area.y, right - left, area.h);
 							}
 						});
@@ -138,31 +139,44 @@ export function buildGraph(){
 
 		// prepare POST parameters for Ajax request
 		var metricsObj = {};
-		metricsObj["conn_name"]        =gl.gDbCredential;
-		metricsObj["selected_instance"]=gl.gRacInstSelected;
-		metricsObj["date_range"]       =getDateRangeMs();
-		metricsObj["browser_tz_offset_sec"] =new Date().getTimezoneOffset()*60;
-		metricsObj["browzer_tz_name"]       =Intl.DateTimeFormat().resolvedOptions().timeZone;
+		metricsObj["conn_name"]        		= gl.gDbCredential;
+		metricsObj["selected_instance"]		= gl.gRacInstSelected;
+		metricsObj["date_range"]       		= getDateRangeMs();
+		metricsObj["browser_tz_offset_sec"] = new Date().getTimezoneOffset()*60;
+		metricsObj["browzer_tz_name"]       = Intl.DateTimeFormat().resolvedOptions().timeZone;
 		
-		if (gl.gDataSource=='v$active_session_history')
+		if (gl.gSelectedWaitClass =='all'){
+				 metricsObj["wait_class"]=gl.gSelectedWaitClass;
+		} else { metricsObj["wait_class"]=waitClassObj[gl.gSelectedWaitClass][0];
+		};
+
+		if (     gl.gDataSource=='v$active_session_history'     && gl.gSelectedWaitClass =='all')
 			{var url=gl.api_root+"/chart_data_ash_detail";}
-		else if (gl.gDataSource=='rt_v$active_session_history')
-			{var url=gl.api_root+"/chart_data_rt_ash_detail";}
-		else if (gl.gDataSource=='dba_hist_active_sess_history')
+		else if (gl.gDataSource=='dba_hist_active_sess_history' && gl.gSelectedWaitClass =='all')
 			{var url=gl.api_root+"/chart_data_ash_summary";}
+		else if (gl.gDataSource=='v$active_session_history'     && gl.gSelectedWaitClass !='all')
+			{var url=gl.api_root+"/chart_data_wait_events_ash_detail";}
 		else
 			{// we should not be here
 			return;
 		};
 		
-		//extract Labels and Colors from global waitClassObj
-		var labelsArr=[];
-		var colorsArr=[];
-		for (let v of Object.values(waitClassObj)){
-			labelsArr.push(v[0]);
-			colorsArr.push(v[1]);
+		if (gl.gSelectedWaitClass == 'all'){
+			// we are drawing for all wait classes
+			//extract Labels and Colors from global waitClassObj
+			var labelsArr=[];
+			var colorsArr=[];
+			for (let v of Object.values(waitClassObj)){
+				labelsArr.push(v[0]);
+				colorsArr.push(v[1]);
+			}
+		} else {
+			// we are drawing events for a specific wait class
+			// in this case colors are not predefined
+			labelsArr=gl.gSelectedWaitEvents;
+			colorsArr=[]; // should get auto assigned
 		}
-		labelsArr.unshift("sample_time_browser_tz");
+		labelsArr.unshift("sample_time_browser_tz_5sec");
 
 		var xhr = new XMLHttpRequest();
 		xhr.open("POST", url);
@@ -319,37 +333,4 @@ function spliceData(newData,oldData) {
 	gl.gChartData=newData;
 	return newData;
 }
-
-// function to add List Items from global object waitClassObj to "Legend" UL element 
-export function defineLegend(){
-	for (let k of Object.keys(waitClassObj)){
-		let $newListItem=$('<li id="'+k+'">'+waitClassObj[k][0]+'</li>');
-		$newListItem.addClass('legend_'+k);
-		$('#legend ul').append($newListItem);
-	}
-	// for mouse over list item highlight corresponding timeseries on the chart
-	$('#legend ul')
-		.off('mouseenter')
-		.on( 'mouseenter', 'li', function () {
-			// highlight time series
-			gl.dg.colorsMap_[this.textContent]="#FFFF00"; //yellow
-			var newOptions = {};
-			newOptions[this.textContent] = {strokeWidth: 1};
-			gl.dg.updateOptions({series: newOptions});
-			// highlight legend item
-			$(this).toggleClass(this.className).toggleClass("legend_highlighted");
-			//stop bubbling
-			return false;}
-		   )
-		.off('mouseleave')
-		.on( 'mouseleave', 'li', function () {
-			// unhighlight time series
-			gl.dg.colorsMap_[this.textContent]=waitClassObj[this.id][1];
-			gl.dg.updateOptions({strokeWidth: 1});
-			// unhighlight legend item
-			$(this).toggleClass(this.className).toggleClass("legend_"+this.id);
-			//stop bubbling
-			return false;}
-		  );
-   }
 

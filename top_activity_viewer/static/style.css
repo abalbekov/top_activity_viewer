@@ -22,7 +22,7 @@ html, body {
 .chart {
 	display: inline-block;
 	position: relative;
-	width: 80%;
+	width: 70%;
 	min-width: 400px;
 }
 #chart_dygraph {
@@ -46,8 +46,8 @@ html, body {
 .dygraph-axis-label.dygraph-axis-label-x,
 .dygraph-axis-label.dygraph-axis-label-y,
 .dygraph-legend {
-	font-size: 1rem;
-	/*font-weight: bold; */
+	font-size: 0.8rem;
+	font-weight: bold;
 }
 
 /*-- Spinner animation --*/
@@ -85,14 +85,13 @@ html, body {
     overflow:hidden;
 }
 
-/*----- Legend -----*/
+/*----- Legend section -----*/
 #legend {
 	display: inline-block;
 	vertical-align: top;
 	position:relative;
 	margin-left: 1em;
 	margin-right: 1em;
-	min-width: 200px;
 	width: 15%;
 	
 }
@@ -102,9 +101,20 @@ html, body {
 	text-align: center;
 	background:hsl(170,70%, 80%);
 }
+#legend h4 span {
+	text-decoration: underline;
+	cursor: pointer;
+}
 
 #legend ul {
 	list-style-type: none;
+	padding-left: 2em;
+	cursor: default;
+}
+
+#legend ul.active{
+	text-decoration: underline;
+	cursor: pointer;
 }
 
 #legend ul li:before {    
@@ -112,6 +122,11 @@ html, body {
     content: '\f0c8';
     margin:0 5px 0 -15px;
 }
+
+/*#legend ul.active li:hover 	{
+	background-color: #0094EC;
+	}
+*/
 
 li.legend_other:before 			{color: #F06EAA;}
 li.legend_clustr:before 		{color: #C9C2AF;}
@@ -126,16 +141,20 @@ li.legend_system_io:before 		{color: #0094EC;}
 li.legend_user_io:before 		{color: #004AE7;}
 li.legend_scheduler:before 		{color: #CCFFCC;}
 li.legend_cpu:before 			{color: #00CC00;}
+
 li.legend_highlighted:before 	{color: #FFFF00;}
+li.legend_highlighted:{
+	background-color: #0094EC;
+}
 
 
-/* zoom and pan/select controls */
+/*----- zoom and pan/select controls -----*/
 #controls {
   position: absolute;
   top: 2em;
   left: 5em;
   z-index: 1;
-  font-size: 1em;
+  font-size: 1.1rem;
 }
 #zoom {
 	display: block;

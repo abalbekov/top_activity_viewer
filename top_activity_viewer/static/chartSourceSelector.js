@@ -25,9 +25,7 @@ export function defineChartSrcSel(){
 		
 		// change visible chart date window
 		var newEnd=new Date();
-		if (selectedValue=='v$active_session_history' 
-			||
-			selectedValue=='realtime v$session_wait' )
+		if (selectedValue=='v$active_session_history' )
 		{	// for details set window to 1hr
 			var newBegin=new Date( newEnd.getTime()-60*60*1000);
 			var newRollPeriod=10;
