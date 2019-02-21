@@ -49,7 +49,6 @@ export function defineChartSrcSel(){
 						,dateWindow: [newBegin.getTime(),newEnd.getTime()]
 						,rollPeriod: newRollPeriod});
 		buildGraph();
-		//defineLabels();
 	});
 	
 }

@@ -113,7 +113,7 @@ export function emptyGraph() {
 	// add custom mouseup handler to request more data
 	$("#chart_dygraph canvas, .dygraph-rangesel-fgcanvas, .dygraph-rangesel-zoomhandle")
 		.mouseup(function(e) {
-            console.log("mouseup detected");
+            //console.log("mouseup detected");
 			// if the pan action moved chart to the edge beyond 
 			// data received from datasource so far,
 			// then request more data
@@ -123,15 +123,6 @@ export function emptyGraph() {
 			{
 				buildGraph();
 			};
-		})
-		.mousedown(function(e) {
-			// save current date range on mousedown in "select" mode 
-			// in case it is start of range selection
-            console.log("mousedown detected");
-			//if ( gl.panSelectToggle == 'select' ){
-			//	//gl.mouseDownDateWindow=gl.dg.xAxisRange();
-			//	gl.dg.updateOptions({ interactionModel:{} }); 
-			//}
 		});
 }
 
@@ -191,7 +182,7 @@ export function buildGraph(){
 					,labels: 			labelsArr
 					,colors:			colorsArr
 					//,showRangeSelector: true
-					,valueRange:		[0, gl.gCpuCoreCount]
+					,valueRange:		[0, gl.gMaxYValue]
 				});
 			}
 		};

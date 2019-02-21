@@ -24,6 +24,11 @@ export function getRACInstances(){
 					} else {
 						gl.gRacInstSelected=e.params.data["instNumber"];
 					};
+					// clear downloaded data
+					gl.gChartData=[];
+					// for initially empty graph fake downloaded date in the future
+					gl.maxDownloadedDate=new Date().getTime()+30*24*60*60*1000;
+					gl.minDownloadedDate=gl.maxDownloadedDate;
 					buildGraph();
 				})
 				.show();

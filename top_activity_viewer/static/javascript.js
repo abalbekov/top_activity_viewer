@@ -25,10 +25,12 @@ jQuery(document).ready(function() {
 
 	// zoom control click handler
 	$("#zoom .fa-plus-square-o").click(function(){
-		gl.dg.updateOptions({valueRange: [0, gl.dg.yAxisRange()[1]/2]});
+		gl.gMaxYValue=gl.dg.yAxisRange()[1]/2;
+		gl.dg.updateOptions({valueRange: [0, gl.gMaxYValue]});
 	});
 	$("#zoom .fa-minus-square-o").click(function(){
-		gl.dg.updateOptions({valueRange: [0, gl.dg.yAxisRange()[1]*2]});
+		gl.gMaxYValue=gl.dg.yAxisRange()[1]*2;
+		gl.dg.updateOptions({valueRange: [0, gl.gMaxYValue]});
 	});
 	
 	// pan/select control click handler

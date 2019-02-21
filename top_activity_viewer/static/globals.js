@@ -3,7 +3,8 @@ let gl={
      'gDbCredential'        : ""
 	,'gRacInstSelected'     : 'all'	// can be 'all' or instance number
 	,'gRacInstanceCnt'      : 1
-	,'gCpuCoreCount'		: 1
+	//,'gCpuCoreCount'		: 1
+	,'gMaxYValue'			: 1  // manual  Y-zoom limit; is CPU Core Count
 	,'gDataSource'          : 'v$active_session_history'
 	//,'gDbaHistSourcexAxisRange':[]
 	,'gChartData'           : [] // data loaded so far

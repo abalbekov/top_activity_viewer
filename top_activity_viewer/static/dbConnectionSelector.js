@@ -45,7 +45,7 @@ function getCpuCoreCount(){
 	$.post(gl.api_root+'/cpu_cores', 
 		  {conn_name: gl.gDbCredential},
 		  function(cpuCount) {
-			gl.gCpuCoreCount=cpuCount;
+			gl.gMaxYValue=cpuCount;
 		  }
 	);
 }
