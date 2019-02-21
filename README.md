@@ -30,9 +30,9 @@ to avoid delay in handing over records from database to the browser.
 The target database can be any Oracle database with Diagnostic and Tuning Pack.
 The pack is necessary because it populates ASH tables with timeseries data used by this tool.
 This means that without this option the tool will not have anything to show.
---------
-Warning - Diagnostic and Tuning Pack is separately licensable option of Oracle Enterprise Edition.
---------
+
+**Warning** - Diagnostic and Tuning Pack is separately licensable option of Oracle Enterprise Edition.
+
 
 
 
