@@ -1,0 +1,8 @@
+---------
+-- to do list:
+---------
+
+20190221:
+---------
+1. add tabs under the chart: top sql, wait events, top session
+2. add subtabs for each of the top-level tabs
