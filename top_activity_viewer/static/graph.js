@@ -1,16 +1,17 @@
 // module to define graph behaviour
 
-import {gl, waitClassObj}        from "./globals.js"
+import {gl, waitClassObj}       from "./globals.js"
+import {activateLegend}			from "./legend.js"
 
 // function to draw empty starter graph
 export function emptyGraph() {
 	
-	// initial data is two zero points 1hr apart for detailed ...
+	// initial data is two zero points 30 mins apart for detailed ...
 	if ((gl.gDataSource == "v$active_session_history")
 	   ||
 	   (gl.gDataSource == "rt_v$active_session_history"))
 	{
-		var startTime=new Date( (new Date()).getTime()-60*60*1000 );
+		var startTime=new Date( (new Date()).getTime()-30*60*1000 );
 		var endTime=new Date();
 	} else if (gl.gDataSource == "dba_hist_active_sess_history")
 	{ // or 6hrs apart if summary ...
@@ -68,7 +69,8 @@ export function emptyGraph() {
 								var top_right = g.toDomCoords(gl.selectedDateWindow[1], +20);
 								var left = bottom_left[0];
 								var right = top_right[0];
-								canvas.fillStyle = "rgba(255, 204, 0, 1.0)";
+								//canvas.fillStyle = "rgba(255, 204, 0, 1.0)";
+								canvas.fillStyle = "#FFD37F";
 								canvas.fillRect(left, area.y, right - left, area.h);
 							}
 						});
@@ -319,37 +321,3 @@ function spliceData(newData,oldData) {
 	gl.gChartData=newData;
 	return newData;
 }
-
-// function to add List Items from global object waitClassObj to "Legend" UL element 
-export function defineLegend(){
-	for (let k of Object.keys(waitClassObj)){
-		let $newListItem=$('<li id="'+k+'">'+waitClassObj[k][0]+'</li>');
-		$newListItem.addClass('legend_'+k);
-		$('#legend ul').append($newListItem);
-	}
-	// for mouse over list item highlight corresponding timeseries on the chart
-	$('#legend ul')
-		.off('mouseenter')
-		.on( 'mouseenter', 'li', function () {
-			// highlight time series
-			gl.dg.colorsMap_[this.textContent]="#FFFF00"; //yellow
-			var newOptions = {};
-			newOptions[this.textContent] = {strokeWidth: 1};
-			gl.dg.updateOptions({series: newOptions});
-			// highlight legend item
-			$(this).toggleClass(this.className).toggleClass("legend_highlighted");
-			//stop bubbling
-			return false;}
-		   )
-		.off('mouseleave')
-		.on( 'mouseleave', 'li', function () {
-			// unhighlight time series
-			gl.dg.colorsMap_[this.textContent]=waitClassObj[this.id][1];
-			gl.dg.updateOptions({strokeWidth: 1});
-			// unhighlight legend item
-			$(this).toggleClass(this.className).toggleClass("legend_"+this.id);
-			//stop bubbling
-			return false;}
-		  );
-   }
-

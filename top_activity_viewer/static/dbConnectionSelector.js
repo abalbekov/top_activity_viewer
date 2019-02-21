@@ -3,6 +3,7 @@ import {getRACInstances}       from "./racInstanceSelector.js"
 import {emptyGraph,buildGraph} from "./graph.js"
 import {defineChartSrcSel}     from "./chartSourceSelector.js"
 //import {loadSqlMonData,createSqlMonDataTable} from "./sqlMonitorDataTable.js"
+import {activateLegend}			from "./legend.js"
 
 export function defineConnections(){
 	$.getJSON(gl.api_root+'/get_credentials', 
@@ -18,7 +19,6 @@ export function defineConnections(){
 				// define actions to perform on connection selection 
 				$('#conn_selector').on('select2:select', function (e) {
 					gl.gDbCredential = e.params.data["text"];
-					//$('#chart_stats').select2({placeholder: "... loading metrics ..."});
 					// check how many RAC instances this connection has
 					getRACInstances();
 					getCpuCoreCount();
@@ -26,13 +26,15 @@ export function defineConnections(){
 					// clear chart and previously downloaded data
 					gl.maxDownloadedDate=(new Date()).getTime()+30*24*60*60*1000; // fake date in the future
 					gl.minDownloadedDate=gl.maxDownloadedDate;
-					gl.gChartDataDetail=[];
+					gl.gChartData=[];
 					buildGraph();
 					// enable chart source selector
 					defineChartSrcSel();
 					// enable chart source select (it is initially disabled)
 					//$('#chart_source option').removeProp('disabled');
 					//$('#chart_source').select2('destroy').select2();
+					// enable legend interaction
+					activateLegend();
 				});
 
 			  })

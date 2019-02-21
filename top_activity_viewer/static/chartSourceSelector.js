@@ -8,7 +8,7 @@ export function defineChartSrcSel(){
 	//$('#chart_source option').prop('disabled',true);
 	$('#chart_source').select2({minimumResultsForSearch: Infinity});
 	
-	/* when metric source is changed : 
+	/* when data source is changed : 
 		 toggle chart data source title on web page 
 	     clear downloaded data 
 	     change visible chart date window

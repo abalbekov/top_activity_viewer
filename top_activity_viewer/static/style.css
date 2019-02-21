@@ -12,8 +12,8 @@ html, body {
 	font-size: 1rem;
 }
 
-#chart_stats, #conn_selector, #chart_source, #rac_instance1 {
-	width: 20em;
+#conn_selector, #chart_source, #rac_instance1 {
+	width: 15em;
 }
 /*-- initially hide --*/
 #rac_instance1 {display: none;}
@@ -22,7 +22,7 @@ html, body {
 .chart {
 	display: inline-block;
 	position: relative;
-	width: 80%;
+	width: 70%;
 	min-width: 400px;
 }
 #chart_dygraph {
@@ -46,8 +46,8 @@ html, body {
 .dygraph-axis-label.dygraph-axis-label-x,
 .dygraph-axis-label.dygraph-axis-label-y,
 .dygraph-legend {
-	font-size: 1rem;
-	/*font-weight: bold; */
+	font-size: 0.8rem;
+	font-weight: bold;
 }
 
 /*-- Spinner animation --*/
@@ -105,12 +105,22 @@ html, body {
 
 #legend ul {
 	list-style-type: none;
+	cursor: default;
+}
+
+#legend ul {
+	list-style-type: none;
+	cursor: default;
 }
 
 #legend ul li:before {    
     font-family: 'FontAwesome';
     content: '\f0c8';
     margin:0 5px 0 -15px;
+}
+
+#legend ul.active li:hover 	{
+	background:hsl(170,70%, 80%);
 }
 
 li.legend_other:before 			{color: #F06EAA;}
@@ -126,7 +136,11 @@ li.legend_system_io:before 		{color: #0094EC;}
 li.legend_user_io:before 		{color: #004AE7;}
 li.legend_scheduler:before 		{color: #CCFFCC;}
 li.legend_cpu:before 			{color: #00CC00;}
+
 li.legend_highlighted:before 	{color: #FFFF00;}
+li.legend_highlighted:{
+	background-color: hsl(170,70%, 80%);
+}
 
 
 /* zoom and pan/select controls */

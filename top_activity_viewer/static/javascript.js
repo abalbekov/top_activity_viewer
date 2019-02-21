@@ -1,8 +1,9 @@
 import {gl}                      			from "./globals.js"
 //import {defineTabs}            			from "./tabs.js"
 import {defineChartSrcSel}     				from "./chartSourceSelector.js"
-import {emptyGraph,buildGraph,defineLegend}	from "./graph.js"
+import {emptyGraph,buildGraph}				from "./graph.js"
 import {defineConnections}     				from "./dbConnectionSelector.js"
+import {defineLegend,activateLegend}		from "./legend.js"
 
 jQuery(document).ready(function() {
 	
@@ -12,7 +13,7 @@ jQuery(document).ready(function() {
 	
 	// make RAC instance selection initially invisible
 	// make chart source selection initially invisible
-	$("form#rac_instance").hide();
+	$("#rac_instance").hide();
 	$("#chart_source").hide();
 	
 	// position and hide spinner-loader

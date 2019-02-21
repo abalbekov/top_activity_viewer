@@ -1,7 +1,7 @@
 // store and exchange Globals between modules
 let gl={ 
      'gDbCredential'        : ""
-	,'gRacInstSelected'     : 'all-aggregate'	// can be 'all-aggregate','all-stacked' or instance number
+	,'gRacInstSelected'     : 'all'	// can be 'all' or instance number
 	,'gRacInstanceCnt'      : 1
 	,'gCpuCoreCount'		: 1
 	,'gDataSource'          : 'v$active_session_history'
