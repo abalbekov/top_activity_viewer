@@ -33,7 +33,9 @@ This means that without this option the tool will not have anything to show.
 
 **Warning** - Diagnostic and Tuning Pack is separately licensable option of Oracle Enterprise Edition.
 
+How to run on local PC : [How to run on local PC.log](https://github.com/abalbekov/top_activity_viewer/blob/master/how%20to%20run%20on%20local%20PC.log)
 
+How to run with Docker : [How to run with Docker.log](https://github.com/abalbekov/top_activity_viewer/blob/master/how%20to%20run%20with%20Docker.log)
 
 
 References: 
