@@ -9,6 +9,7 @@ and then chart it in a browser as time series in interactive dyGraph [http://dyg
 and then let user to select a specific date range and then show more detailed information for this date range.
 
 Example screenshot:
+
 ![Oracle Top Activity Viewer](https://github.com/abalbekov/top_activity_viewer/blob/master/Screenshot.PNG "Oracle Top Activity Viewer")
 
 Using dyGraph makes analyzing time series fun and snappy - you can freely pan, zoom and select to focus on arbitrary date range.
