@@ -200,7 +200,7 @@ export function buildGraph(){
 				displayData=gl.gChartData;
 			//} else {displayData=newData;};
 			if (displayData.length > 0){
-				gl.dg.updateOptions({file: displayData});
+				gl.dg.updateOptions({file: displayData, valueRange: [0, gl.gMaxYValue]});
 			}
 		}
 	
