@@ -12,14 +12,16 @@ Example screenshot:
 
 ![Oracle Top Activity Viewer](https://github.com/abalbekov/top_activity_viewer/blob/master/Screenshot.PNG "Oracle Top Activity Viewer")
 
-Using dyGraph makes analyzing time series fun and snappy - you can freely pan, zoom and select to focus on arbitrary date range.
-The displayed time range is not limited to either 1hr or 24 hrs as in OEM.
-The left and right panning is not limited to 24hr steps as in OEM.
-The date range selection is not limited to 5 minutes interval as in OEM.
+Using dyGraph makes analyzing time series fun and snappy. 
+It runs surprizingly fast - taking just a second or two to display database Active Sessions chart in a  browser.
+You can freely pan, zoom and select to focus on arbitrary date range.
+The displayed time range is not limited to either 1hr or 24 hrs as in OEM, 
+the left and right panning is not limited to 24hr steps
+and date range selection is not limited to 5 minutes interval as in OEM.
 
 Compared to OEM this tool does not require setting up any dedicated middleware server.
 The middleware component is lightweight Python cx_Oracle Flask application requiring very little resources.
-It can run on laptop in CMD prompt, in a Docker container or in AWS cloud as combination of Lambda, API Gateway and S3 Static Website.
+This project code is only 100 KB. It can run on a laptop in CMD prompt, in a Docker container or in AWS cloud as combination of Lambda, API Gateway and S3 Static Website.
 
 Flask application sends browser a single web page consisting of HTML, CSS and javascript.
 Then the browser calls several API endpoints served by Flask to asynchronously retrieve time series data and render
