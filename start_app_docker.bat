@@ -1,5 +1,6 @@
 
-docker run -d --rm ^
+docker run ^
+-d --rm ^
 --name app ^
 -p 0.0.0.0:5000:5000 ^
 -v "%CD%\top_activity_viewer":/app ^

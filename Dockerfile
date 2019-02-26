@@ -22,4 +22,5 @@ ENV FLASK_DEBUG=1
 
 # app.py is supposed to be mounted when creating container with -v source:/app
 WORKDIR /app
-CMD ["python", "app.py"]
+#CMD ["python", "app.py"]
+CMD ["flask", "run", "--host=0.0.0.0", "--port=5000"]
