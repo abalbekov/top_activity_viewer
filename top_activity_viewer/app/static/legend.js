@@ -49,7 +49,6 @@ export function activateLegend(){
 			}}
 		   )
 		.off('mouseleave')
-		//.on( 'mouseleave', 'li', function () {
 		.on( 'mouseleave', function () {
 			if (gl.gDbCredential) {
 				// clear outstanding time series highlight request
