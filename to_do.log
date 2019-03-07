@@ -4,5 +4,13 @@
 
 20190221:
 ---------
-1. add tabs under the chart: top sql, wait events, top session
-2. add subtabs for each of the top-level tabs
+-- add tabs under the chart: top sql, wait events, top session
+	- done 
+-- add subtabs for each of the top-level tabs
+
+20190307:
+---------
+-- Wait Class tab:
+	-- Wait Class tab content needs to come from same source as Chart
+	-- Place indicator on selected Wait Class in left column
+-- Add Top Sessions tab with subtabs/Info panel for client info, wait info, server info
