@@ -53,7 +53,7 @@
 			<option value="dba_hist_active_sess_history">dba_hist_active_sess_history</option>
 			<option disabled value="rt_v$session_wait">realtime v$session_wait</option>
 		</select>
-		<div class="outer">
+		<div id="chart_outer" class="outer">
 			<div class="chart">
 				<h2>v$active_session_history</h2>
 				<div id="chart_dygraph" style="width:30em; min-width:200px;"></div>
@@ -74,7 +74,45 @@
 				<ul></ul>
 			</div>
 		</div>
-		<div id="selected_range" disabled>
+		<div id="tabs_outer" class="outer" >
+			<div id="selected_range" disabled> </div>
+			<div class="tabs" disabled>
+				<ul class="tab-links">
+					<li class="active"><a href="#tab1">Top SQL</a></li>
+					<li><a href="#tab2">Wait Events</a></li>
+					<li><a href="#tab3">v$sqlmonitor</a></li>
+					<li><a href="#tab4">ASH Report</a></li>
+					<li><a href="#tab5">Raw ASH</a></li>
+				</ul>
+				<div class="tab-content">
+					<div id="tab1" class="tab active">
+						<p>Top SQL Under Construction ...</p>
+						<p>Please check back later!</p>
+					</div>
+					<div id="tab2" class="tab">
+						<div class="left-column">
+							<h4>Wait Class</h4>
+							<ul></ul>
+						</div>
+						<div class="right-column">
+							<h4>Wait Events</h4>
+							<p>Please check back later!</p>
+						</div>
+					</div>
+					<div id="tab3" class="tab">
+						<p>v$sqlmonitor Under Construction ...</p>
+						<p>Please check back later!</p>
+					</div>
+					<div id="tab4" class="tab">
+						<p>ASH Report Under Construction ...</p>
+						<p>Please check back later!</p>
+					</div>
+					<div id="tab5" class="tab">
+						<p>Raw ASH Under Construction ...</p>
+						<p>Please check back later!</p>
+					</div>
+				</div>
+			</div>
 		</div>
 		<script type="module" src="/static/javascript.js"></script>
 	</body>

@@ -207,3 +207,120 @@ group by wait_class;
 			'User I/O'		 as user_io)
 	)
 	order by sample_time_browser_tz_5min desc
+
+--
+-- Counts of wait classes and events in v$active_session_history
+--
+-- Since in ASH when session is on CPU it does not have any WAIT_CLASS/EVENT,
+-- I am setting it to "ON CPU" and renaming to ACTIVITY_CLASS and ACTIVITY_EVENT
+--
+select  count(1)
+    	,case when session_state = 'ON CPU' then 'ON CPU'
+    	else event	end as activity_event
+    	,case when session_state = 'ON CPU' then 'ON CPU'
+    	else wait_class	end as activity_class
+from v$active_session_histor
+where nvl(wait_class,'NONE') <> 'Idle'
+group by 
+        case when session_state = 'ON CPU' then 'ON CPU'
+        else wait_class	end
+    	,case when session_state = 'ON CPU' then 'ON CPU'
+    	else event end
+order by 3,2;
+
+      COUNT(1) ACTIVITY_EVENT                               ACTIVITY_CLASS
+    ---------- -------------------------------------------- --------------
+             1 log file switch completion                   Configuration 
+             1 DIAG idle wait                               Idle          
+             3 wait for unread message on broadcast channel Idle          
+          3370 ON CPU                                       ON CPU        
+             1 Failed Logon Delay                           Other         
+             1 PGA memory operation                         Other         
+          9226 PX Deq: Slave Session Stats                  Other         
+            28 oracle thread bootstrap                      Other         
+             5 os thread creation                           Other         
+            77 control file parallel write                  System I/O    
+            59 control file sequential read                 System I/O    
+                                                                          
+      COUNT(1) ACTIVITY_EVENT                               ACTIVITY_CLASS
+    ---------- -------------------------------------------- --------------
+             1 db file async I/O submit                     System I/O    
+            24 db file parallel write                       System I/O    
+            12 log file parallel write                      System I/O    
+             1 Disk file operations I/O                     User I/O      
+             3 db file sequential read                      User I/O      
+             1 direct path write                            User I/O      
+		 
+-- On Waits/Events tab the browser will need to display bar length showing event relative importance
+-- within WAIT_CLASS
+-- For this RATIO_TO_REPORT can be used to calculate percentages
+--
+with counts as (
+    select  count(1) as cnt
+        	,case when session_state = 'ON CPU' then 'ON CPU'
+        	else event	end as activity_event
+        	,case when session_state = 'ON CPU' then 'ON CPU'
+        	else wait_class	end as activity_class
+    from v$active_session_history
+    where nvl(wait_class,'NONE') <> 'Idle'
+    group by 
+            case when session_state = 'ON CPU' then 'ON CPU'
+            else wait_class	end
+        	,case when session_state = 'ON CPU' then 'ON CPU'
+        	else event end
+ )
+--
+select
+	100*trunc(ratio_to_report(cnt) over(partition by activity_class),3) as pct
+	, counts.*
+from counts;
+
+     PCT        CNT ACTIVITY_EVENT                               ACTIVITY_CLASS
+    ---- ---------- -------------------------------------------- --------------
+     100          1 log file switch completion                   Configuration 
+      25          1 DIAG idle wait                               Idle          
+      75          3 wait for unread message on broadcast channel Idle          
+     100       3472 ON CPU                                       ON CPU        
+       0          1 ADR block file read                          Other         
+       0          1 Failed Logon Delay                           Other         
+    99.5       9148 PX Deq: Slave Session Stats                  Other         
+      .3         31 oracle thread bootstrap                      Other         
+       0          6 os thread creation                           Other         
+    44.9         76 control file parallel write                  System I/O    
+    32.5         55 control file sequential read                 System I/O    
+      .5          1 db file async I/O submit                     System I/O    
+    14.2         24 db file parallel write                       System I/O    
+     7.6         13 log file parallel write                      System I/O    
+      20          1 Disk file operations I/O                     User I/O      
+      60          3 db file sequential read                      User I/O      
+      20          1 direct path write                            User I/O      
+
+--
+-- similarly for relative importance between WAIT_CLASSes:
+--
+with counts as (
+    select  count(1) as cnt
+        	,case when session_state = 'ON CPU' then 'ON CPU'
+        	else wait_class	end as activity_class
+    from v$active_session_history
+    where nvl(wait_class,'NONE') <> 'Idle'
+    group by 
+            case when session_state = 'ON CPU' then 'ON CPU'
+            else wait_class	end
+ )
+--
+select
+	100*trunc(ratio_to_report(cnt) over(),3) as pct
+	, counts.*
+from counts;
+
+    PCT               CNT ACTIVITY_CLASS
+    ---------- ---------- -------------
+           1.3        174 System I/O   
+             0          5 User I/O     
+          71.6       9196 Other        
+             0          1 Configuration
+             0          4 Idle         
+          26.9       3456 ON CPU       
+
+

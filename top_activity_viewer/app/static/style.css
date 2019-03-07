@@ -18,7 +18,7 @@ html, body {
 /*-- initially hide --*/
 #rac_instance1 {display: none;}
 
-/*-- Chart and Metric legend --*/
+/*-- Chart section --*/
 .chart {
 	display: inline-block;
 	position: relative;
@@ -80,6 +80,7 @@ html, body {
 .outer {
 	/*position:relative;*/
 	width=90%;
+	margin-top: 0.2rem;
 	/*--- below is to prevent legend div falling to next line on window shrink ---*/
 	white-space:nowrap;
     overflow:hidden;
@@ -101,11 +102,6 @@ html, body {
 	font-size: 1rem; 
 	text-align: center;
 	background:hsl(170,70%, 80%);
-}
-
-#legend ul {
-	list-style-type: none;
-	cursor: default;
 }
 
 #legend ul {
@@ -138,9 +134,6 @@ li.legend_scheduler:before 		{color: #CCFFCC;}
 li.legend_cpu:before 			{color: #00CC00;}
 
 li.legend_highlighted:before 	{color: #FFFF00;}
-li.legend_highlighted:{
-	background-color: hsl(170,70%, 80%);
-}
 
 
 /* zoom and pan/select controls */
@@ -178,3 +171,111 @@ li.legend_highlighted:{
     color: red;
 	cursor: pointer;
 }
+
+/*----- Tabs -----*/
+.tabs {
+    width:100%;
+    display:inline-block;
+	#float:left;
+}
+    /*----- Tab Links -----*/
+    /* Clearfix */
+    .tab-links:after {
+        display:block;
+        clear:both;
+        content:'';
+    }
+ 
+    .tab-links {
+        margin: 0;
+        padding: 0;
+		white-space:nowrap;
+		overflow:hidden;
+    }
+    .tab-links li {
+		display:inline-block;
+        list-style:none;
+    }
+ 
+        .tab-links a {
+            padding:5px 15px;
+            display:inline-block;
+            border-radius:5px 5px 0px 0px;
+            background:hsl(170,70%, 80%);
+            font-size:1em;
+            font-weight:100;
+            color: darkCyan;
+            transition:all linear 0.10s;
+            box-shadow:-1px -1px 0px rgba(0,0,0,0.15);
+            text-decoration: none;
+        }
+ 
+        .tab-links a:hover {
+            background:hsl(170, 70%, 50%);
+            text-decoration:none;
+        }
+ 
+    li.active a, li.active a:hover {
+        background:#fff;
+        color:#4c4c4c;
+    }
+ 
+    /*----- Content of Tabs -----*/
+    .tab-content {
+		padding: 0;
+		padding-bottom: 15px;
+        border-radius:0px 3px 3px 3px;
+        box-shadow:-1px -1px 0px rgba(0,0,0,0.15);
+        background:#fff;
+		/*-- to fix height for parent of floated element --*/
+		overflow: auto;
+		width: 100%;
+		/*-- end fix height for parent of floated element --*/
+    }
+ 
+        .tab {
+            display:none;
+        }
+ 
+        .tab.active {
+            display:block;
+        }
+/*-- selected date range section --*/
+h4 {
+	margin: 0.2rem;
+	font-size: 1em;
+	font-weight: 100;
+	color: #4c4c4c;
+	background: hsl(170,70%, 80%);
+}
+.left-column {
+	display: inline-block;
+	position: relative;
+	width: 30%;
+	min-width: 150px;
+}
+
+.right-column {
+	display: inline-block;
+	vertical-align: top;
+	position:relative;
+	margin-left: 1em;
+	margin-right: 1em;
+	min-width: 200px;
+	width: 55%;
+}
+
+#tab2 div.left-column ul {
+	list-style-type: none;
+	cursor: default;
+    margin:0;
+	padding:0;
+}
+#tab2 div.left-column ul li:hover 	{
+	background:hsl(170,70%, 80%);
+}
+#tab2 div.left-column ul li span{
+	display: inline-block;
+	width:6em;
+}
+

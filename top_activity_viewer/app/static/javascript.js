@@ -1,20 +1,23 @@
-import {gl}                      			from "./globals.js"
-//import {defineTabs}            			from "./tabs.js"
-import {defineChartSrcSel}     				from "./chartSourceSelector.js"
-import {emptyGraph,buildGraph}				from "./graph.js"
-import {defineConnections}     				from "./dbConnectionSelector.js"
-import {defineLegend,activateLegend}		from "./legend.js"
+import {gl}                      		from "./globals.js"
+import {defineTabs}            			from "./tabs.js"
+import {defineChartSrcSel}     			from "./chartSourceSelector.js"
+import {emptyGraph,buildGraph}			from "./graph.js"
+import {defineConnections}     			from "./dbConnectionSelector.js"
+import {defineLegend,activateLegend}	from "./legend.js"
 
 jQuery(document).ready(function() {
 	
+	defineTabs();
 	defineConnections()
 	emptyGraph();
 	defineLegend();
 	
 	// make RAC instance selection initially invisible
 	// make chart source selection initially invisible
+	// make tabs under chart initially invisible
 	$("#rac_instance").hide();
 	$("#chart_source").hide();
+	$("#tabs_outer").hide();
 	
 	// position and hide spinner-loader
 	var loaderTop =gl.dg.height_/2 - $(".loader").outerHeight()/2 - gl.dg.attrs_.xLabelHeight ;

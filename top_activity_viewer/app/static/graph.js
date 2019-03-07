@@ -1,7 +1,8 @@
 // module to define graph behaviour
 
-import {gl, waitClassObj}       from "./globals.js"
-import {activateLegend}			from "./legend.js"
+import {gl, waitClassObj}       	from "./globals.js"
+import {activateLegend}				from "./legend.js"
+import {defineWaitEventsTab}		from "./tabs.js"
 
 // function to draw empty starter graph
 export function emptyGraph() {
@@ -32,6 +33,8 @@ export function emptyGraph() {
 					g.updateOptions({ underlayCallback: null });
 					// clear "selected range ..." wording
 					$("#selected_range").hide();
+					// clear underchart tabs
+					$("#tabs_outer").hide();
 				}
 				
 				if (gl.panSelectToggle=='select') {
@@ -80,6 +83,9 @@ export function emptyGraph() {
 												   " - "+
 												   new Date(gl.selectedDateWindow[1]).toString())
 						.show();
+						defineWaitEventsTab();
+						// show underchart tabs
+						$("#tabs_outer").show();
 					}
 			}
 			else if (gl.panSelectToggle=='pan' && context.isPanning){
@@ -130,7 +136,7 @@ export function emptyGraph() {
 export function buildGraph(){
 
 		// prepare POST parameters for Ajax request
-		var metricsObj = {};
+		let metricsObj = {};
 		metricsObj["conn_name"]        =gl.gDbCredential;
 		metricsObj["selected_instance"]=gl.gRacInstSelected;
 		metricsObj["date_range"]       =getDateRangeMs();
